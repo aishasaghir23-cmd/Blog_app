@@ -1,0 +1,32 @@
+# DevBlog
+
+A small blog built with MongoDB, Express, React, useEffect, axios and React Router.
+Built for the MERN Stack Development Workshop 2026 (Week 5 project) — Hayatian Computing Society, University of Gujrat.
+
+## What it does
+
+Blog posts live in MongoDB. An Express API serves them as JSON. React fetches them with
+useEffect and axios, and React Router splits the site into pages with clean URLs
+(/, /posts, /posts/:id, /new, /about, plus a 404 catch-all).
+
+## Running it locally
+
+Terminal 1 — backend:
+cd server
+npm install
+npm run seed
+npm start
+
+Terminal 2 — frontend:
+npm install
+npm run dev
+
+## API routes
+
+GET /api/posts - all posts, newest first
+GET /api/posts/:id - one post
+POST /api/posts - create a new post
+DELETE /api/posts/:id - delete a post
+
+---
+Instructor: Kamran Ahsan | Hayatian Computing Society | University
