@@ -1,0 +1,14 @@
+ 1. Your site has an XSS bug. What can an attacker do, and not do, when the token is in an HttpOnly cookie?
+An attacker can execute arbitrary JavaScript in the victim's browser context, perform actions on behalf of the user (e.g., make authorized HTTP requests since the browser automatically appends HttpOnly cookies), read DOM data, or manipulate the user UI. However, the attacker **cannot** directly extract or read the JWT value using `document.cookie` or transfer the secret authentication string to an offsite location to reuse outside the victim's active session context.
+ 2. Why is 404 better than 403 when patient A asks for patient B's appointment?
+Returning a `403 Forbidden` confirms that the appointment ID exists in the database, leaking private database state and information to unauthorized users. A `404 Not Found` prevents resource enumeration attacks by keeping the existence of the specific ID hidden from unauthorized parties altogether.
+3. Why does `/me` exist when the browser already has a valid cookie?
+Because the JWT is stored inside an `HttpOnly` cookie, client-side JavaScript (including Redux) cannot read its contents directly. On initial application load or page refresh, client state is cleared; calling `/me` allows the frontend to query the server using the cookie to retrieve essential user profile context (e.g., name, role) without storing authentication tokens in JavaScript.
+4. Your staff panel hides the Confirm button from patients. Why is that not security?
+Hiding buttons in the user interface is only a usability feature. Any malicious user can bypass UI restrictions by issuing API calls directly using browser development tools, Postman, or `curl`. Real security requires the server to enforce authorization middleware (`requireRole('staff')`) on the endpoint handling the request.
+5. A patient wants to be signed out of every device now. Why is that hard with a JWT?
+JWTs are completely stateless; once signed and issued by the server, they remain valid everywhere until their expiration timestamp passes. The server does not maintain active session entries by default, meaning deleting a cookie on one client does not invalidate the JWT itself if it was copied or used elsewhere.
+6. You set `expiresIn` to seven days. Argue for shorter and for longer. Which would you pick for a clinic?
+* **Shorter (e.g., 15–30 mins):** Restricts the window of risk if a token is intercepted and minimizes exposure on shared/public clinic devices.
+* **Longer (e.g., 30 days):** Improves user experience by avoiding frequent log-ins for returning patients.
+* **Clinic Choice:** A short expiration (e.g., 15–30 minutes or 1 day maximum) is preferable for a medical application due to the sensitive nature of patient health records (PHI) and the common use of shared public or computer lab terminals.
